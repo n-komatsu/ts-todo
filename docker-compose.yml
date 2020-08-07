@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  ts-todo:
+    container_name: ts-todo
+    image: node:12.18.2
+    tty: true
+    build:
+      context: .
+      dockerfile: ./Dockerfile/node
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/ts-todo
+    depends_on:
+      - ts-todo-db
+  ts-todo-db:
+    container_name: ts-todo-db
+    image: mysql:5.7
+    build:
+      context: .
+      dockerfile: ./Dockerfile/mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=ts_todo
