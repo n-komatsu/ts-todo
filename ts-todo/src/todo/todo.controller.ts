@@ -5,7 +5,10 @@ export class TodoController {
   @Get()
   async findAll(): Promise<Object> {
     return {
-      todos: [{ id: 1, title: 'Learn TypeScript', isCompleted: false }],
+      status: 200,
+      responce: {
+        todos: [{ id: 1, title: 'Learn TypeScript', isCompleted: false }],
+      }
     };
   }
 }
