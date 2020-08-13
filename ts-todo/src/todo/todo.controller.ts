@@ -7,7 +7,7 @@ export class TodoController {
     return {
       status: 200,
       responce: {
-        todos: [{ id: 1, title: 'Learn TypeScript', isCompleted: false }],
+        todos: [{ id: 1, title: 'Learn TypeScript', completed: false }],
       }
     };
   }
