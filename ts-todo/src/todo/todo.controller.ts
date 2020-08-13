@@ -1,4 +1,11 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
-@Controller('todo')
-export class TodoController {}
+@Controller('api/todo')
+export class TodoController {
+  @Get()
+  async findAll(): Promise<Object> {
+    return {
+      todos: [{ id: 1, title: 'Learn TypeScript', isCompleted: false }],
+    };
+  }
+}
