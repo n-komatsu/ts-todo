@@ -1,12 +1,8 @@
+import { Todo } from './todo.entity';
+
 export interface TodoResponce {
   status: number,
   responce: {
-    todos: [
-      {
-        id: number,
-        title: string,
-        completed: boolean,
-      }
-    ]
+    todos: [Todo]
   }
 }
