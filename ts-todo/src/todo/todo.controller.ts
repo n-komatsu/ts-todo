@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Body, Post } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post, Put } from '@nestjs/common';
 import { TodoResponce } from './todoResponce.interface';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './create-todo-dto';
+import { UpdateTodoDto } from './update-todo-dto';
 
 @Controller('api/todo')
 export class TodoController {
@@ -39,6 +40,20 @@ export class TodoController {
       status: 200,
       responce: {
         message: '作成に成功しました',
+      }
+    }
+  }
+
+  @Put(':id')
+  async update(@Param() params, @Body() updateTodoDto: UpdateTodoDto): Promise<TodoResponce>{
+    const { id } = params;
+    const todo = await this.todoService.update(id, updateTodoDto)
+
+    return {
+      status: 200,
+      responce: {
+        message: '更新に成功しました',
+        todo
       }
     }
   }
