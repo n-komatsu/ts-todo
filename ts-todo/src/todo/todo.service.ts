@@ -1,3 +1,5 @@
+//import { QueryService } from '@nestjs-query/core';
+//import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -28,5 +30,9 @@ export class TodoService {
     await this.todoRepository.update(id, todoDto)
     const todo = await this.todoRepository.findOne(id);
     return todo
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.todoRepository.softDelete(id);
   }
 }

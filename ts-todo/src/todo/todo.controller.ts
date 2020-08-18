@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Body, Post, Put } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post, Put, Delete } from '@nestjs/common';
 import { TodoResponce } from './todoResponce.interface';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './create-todo-dto';
@@ -54,6 +54,19 @@ export class TodoController {
       responce: {
         message: '更新に成功しました',
         todo
+      }
+    }
+  }
+
+  @Delete(':id')
+  async delete(@Param() params): Promise<TodoResponce> {
+    const { id } = params;
+    await this.todoService.delete(id);
+
+    return {
+      status: 200,
+      responce: {
+        message: '削除に成功しました',
       }
     }
   }
