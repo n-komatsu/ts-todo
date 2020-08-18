@@ -13,4 +13,8 @@ export class TodoService {
   async findAll(): Promise<Todo[]> {
     return this.todoRepository.find();
   }
+
+  async findOne(id: string): Promise<Todo> {
+    return this.todoRepository.findOne(id);
+  }
 }
