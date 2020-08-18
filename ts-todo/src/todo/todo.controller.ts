@@ -1,6 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post } from '@nestjs/common';
 import { TodoResponce } from './todoResponce.interface';
 import { TodoService } from './todo.service';
+import { CreateTodoDto } from './create-todo-dto';
 
 @Controller('api/todo')
 export class TodoController {
@@ -27,6 +28,17 @@ export class TodoController {
       status: 200,
       responce: {
         todo
+      }
+    }
+  }
+
+  @Post()
+  async create(@Body() todoDto: CreateTodoDto): Promise<TodoResponce> {
+    await this.todoService.create(todoDto);
+    return {
+      status: 200,
+      responce: {
+        message: '作成に成功しました',
       }
     }
   }
