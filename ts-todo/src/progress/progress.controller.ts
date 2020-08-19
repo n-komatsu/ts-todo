@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Param, Post } from '@nestjs/common';
 
-@Controller('progress')
-export class ProgressController {}
+@Controller('api/progress')
+export class ProgressController {
+  @Post(':id')
+  toggleProgressState(@Param() params): Object {
+    const { id } = params.id;
+    return {
+      status: 200,
+    }
+  }
+}
