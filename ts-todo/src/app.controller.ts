@@ -1,14 +1,12 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller('api/progress')
+@Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Post(':id')
-  toggleProgressState(): Object {
-    return {
-      status: 200,
-    }
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();
   }
 }
