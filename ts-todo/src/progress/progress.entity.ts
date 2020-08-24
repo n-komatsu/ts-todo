@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Todo } from '../todo/todo.entity';
 
 @Entity()
-export class progress {
+export class Progress {
   @PrimaryGeneratedColumn()
   id: number
 
