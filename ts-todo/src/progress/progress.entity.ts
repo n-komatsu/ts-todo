@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToOne ,JoinColumn } from 'typeorm';
+import { Todo } from '../todo/todo.entity';
 
 @Entity()
 export class progress {
@@ -16,4 +17,8 @@ export class progress {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp' })
   deletedAt: Date
+
+  @OneToOne(type => Todo)
+  @JoinColumn({name: 'todo_id'})
+  todo: Todo
 }
