@@ -6,7 +6,7 @@ export class progress {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
+  @Column({ default: false })
   completed: boolean
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
