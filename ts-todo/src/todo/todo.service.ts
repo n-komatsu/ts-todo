@@ -53,6 +53,13 @@ export class TodoService {
   }
 
   async delete(id: string): Promise<void> {
-    await this.todoRepository.softDelete(id);
+    const todo = await this.connection
+      .getRepository(Todo)
+      .createQueryBuilder('todo')
+      .where("todo.id = :id", { id })
+      .leftJoinAndSelect('todo.progress', 'progress')
+      .getOne()
+
+    await this.todoRepository.softRemove(todo);
   }
 }
