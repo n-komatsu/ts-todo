@@ -18,7 +18,7 @@ export class Progress {
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp' })
   deletedAt: Date
 
-  @OneToOne(type => Todo)
+  @OneToOne(type => Todo, todo => todo.progress)
   @JoinColumn({name: 'todo_id'})
   todo: Todo
 }

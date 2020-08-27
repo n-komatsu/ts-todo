@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Connection } from 'typeorm';
 import { Todo } from './todo.entity';
+import { Progress } from '../progress/progress.entity';
 import { CreateTodoDto } from './create-todo-dto';
 import { UpdateTodoDto } from './update-todo-dto';
 
@@ -37,7 +38,12 @@ export class TodoService {
   }
 
   async create(todoDto: CreateTodoDto): Promise<void> {
-    await this.todoRepository.save(todoDto);
+    const todo = new Todo();
+    todo.title = todoDto.title;
+    const progress = new Progress();
+    progress.completed = false;
+    todo.progress = progress;
+    await this.todoRepository.save(todo);
   }
 
   async update(id: string, todoDto: UpdateTodoDto): Promise<Todo> {
