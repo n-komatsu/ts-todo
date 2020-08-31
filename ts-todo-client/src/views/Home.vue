@@ -4,10 +4,27 @@
       <h1 class="header-title">TODOS</h1>
     </header>
     <div class="wrapper">
-      <div class="text-field">
-        <i class="text-field-icon plus"></i>
-        <input type="text" class="text-field-input" placeholder="What do needs to be done?">
+      <div class="home-add-todo">
+        <div class="text-field">
+          <i class="text-field-icon is-left plus"></i>
+          <input type="text" class="text-field-input" placeholder="What do needs to be done?">
+        </div>
       </div>
+      <ul class="home-todo-list">
+        <li>
+          <div class="text-field">
+            <label>
+              <input type="checkbox" class="text-field-checkbox">
+              <i class="text-field-icon is-left checkbox"></i>
+            </label>
+            <input type="text" class="text-field-input" placeholder="What do needs to be done?">
+            <i class="text-field-icon is-right remove"></i>
+          </div>
+        </li>
+        <li>
+          <p class="home-todo-list-result">未完了:1 完了:1</p>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -33,11 +50,30 @@
     margin: 60px auto 0;
   }
 
+  .home-add-todo {
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .home-todo-list {
+    margin-top: 40px;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.2);
+    &-result {
+      background-color: #fff;
+      color: #ffc107;
+      padding: 16px;
+    }
+    li {
+      border-bottom: 1px solid #c4c4c4;
+      &:last-child {
+        border-top: none;
+      }
+    }
+  }
+
   .text-field {
     position: relative;
-    padding: 16px 16px 16px 56px;
+    padding: 16px 56px 16px 56px;
     background-color: #fff;
-    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.2);
     &-input {
       width: 100%;
       font-size: 18px;
@@ -57,8 +93,14 @@
       position: absolute;
       width: 20px;
       height: 20px;
-      top: 15px;
-      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      &.is-left {
+        left: 16px;
+      }
+      &.is-right {
+        right: 16px;
+      }
       &:hover {
         cursor: pointer; 
       }
@@ -83,6 +125,48 @@
         top: calc(50% - 2px);
         left: 0;
       }
+      &.checkbox {
+        border: 1px solid #c4c4c4;
+        border-radius: 50%;
+      }
+      &.checkbox:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 2.5px;
+        left: 6px;
+        width: 5px;
+        height: 10px;
+        transform: rotate(40deg);
+        border-bottom: 3px solid #c4c4c4;
+        border-right: 3px solid #c4c4c4;
+      }
+      &.remove:before,
+      &.remove:after {
+        content: '';
+        display: block;
+        position: absolute;
+        background-color: #b5543f;
+        width: 100%;
+        height: 1px;
+        top: 50%;
+        left: 0;
+      }
+      &.remove:before {
+        transform: rotate(45deg);
+      }
+      &.remove:after {
+        transform: rotate(-45deg);
+      }
+    }
+    &-checkbox {
+      display: none;
+    }
+    &-checkbox:checked + .text-field-icon {
+      border-color: #ffc107;
+    }
+    &-checkbox:checked + .text-field-icon:before {
+      border-color: #ffc107;
     }
   }
 </style>
