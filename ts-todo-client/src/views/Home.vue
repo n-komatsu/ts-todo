@@ -61,6 +61,7 @@
       background-color: #fff;
       color: #ffc107;
       padding: 16px;
+      font-weight: bold;
     }
     li {
       border-bottom: 1px solid #c4c4c4;
