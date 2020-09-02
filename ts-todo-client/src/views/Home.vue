@@ -17,7 +17,7 @@
               <input type="checkbox" class="text-field-checkbox" :checked="todo.progress.completed">
               <i class="text-field-icon is-left checkbox"></i>
             </label>
-            <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title">
+            <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title" @keydown.enter="enterKeyPressed($event, todo)">
             <i class="text-field-icon is-right remove"></i>
           </div>
         </li>
@@ -39,21 +39,38 @@ export default defineComponent({
       todos: [],
     });
 
-    fetchTodos().then((res) => {
-      state.todos = [...res.data.responce.todos];
-    });
+    fetchTodos()
 
     return {
-      state
+      state,
+      enterKeyPressed,
     }
 
     async function fetchTodos() {
       const res = await axios({
         method: 'GET',
         url: 'http://localhost:3000/api/todo'
+      }).then((res) => {
+        state.todos = [...res.data.responce.todos];
       });
 
       return res
+    }
+
+    async function enterKeyPressed($event, todo) {
+      // 日本語変換時のエンターキー入力の場合は処理を終了
+      if ($event.keyCode !== 13) return;
+      const { id } = todo;
+      const updateTitle = $event.target.value;
+      await axios({
+        method: 'PUT',
+        url: `http://localhost:3000/api/todo/${id}`,
+        data: {
+          title: updateTitle,
+        }
+      }).then(() => {
+        fetchTodos();
+      });
     }
   }
 })
