@@ -11,13 +11,13 @@
         </div>
       </div>
       <ul class="home-todo-list">
-        <li>
+        <li v-for="(todo, index) in state.todos" :key="index">
           <div class="text-field">
             <label>
-              <input type="checkbox" class="text-field-checkbox">
+              <input type="checkbox" class="text-field-checkbox" :checked="todo.progress.completed">
               <i class="text-field-icon is-left checkbox"></i>
             </label>
-            <input type="text" class="text-field-input" placeholder="What do needs to be done?">
+            <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title">
             <i class="text-field-icon is-right remove"></i>
           </div>
         </li>
@@ -28,6 +28,36 @@
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { reactive, defineComponent } from '@vue/composition-api';
+import axios from 'axios';
+
+export default defineComponent({
+  setup() {
+    const state = reactive({
+      todos: [],
+    });
+
+    fetchTodos().then((res) => {
+      state.todos = [...res.data.responce.todos];
+    });
+
+    return {
+      state
+    }
+
+    async function fetchTodos() {
+      const res = await axios({
+        method: 'GET',
+        url: 'http://localhost:3000/api/todo'
+      });
+
+      return res
+    }
+  }
+})
+</script>
 
 <style lang="scss" scoped>
   .header {
