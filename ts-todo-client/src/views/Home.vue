@@ -7,7 +7,7 @@
       <div class="home-add-todo">
         <div class="text-field">
           <i class="text-field-icon is-left plus"></i>
-          <input type="text" class="text-field-input" placeholder="What do needs to be done?">
+          <input type="text" class="text-field-input" placeholder="What do needs to be done?" v-model="state.createTodoValue" @keydown.enter="createTodo">
         </div>
       </div>
       <ul class="home-todo-list">
@@ -17,7 +17,7 @@
               <input type="checkbox" class="text-field-checkbox" :checked="todo.progress.completed">
               <i class="text-field-icon is-left checkbox"></i>
             </label>
-            <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title" @keydown.enter="enterKeyPressed($event, todo)">
+            <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title" @keydown.enter="updateTodo($event, todo)">
             <i class="text-field-icon is-right remove"></i>
           </div>
         </li>
@@ -30,20 +30,22 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent } from '@vue/composition-api';
+import { reactive, defineComponent, ref } from '@vue/composition-api';
 import axios from 'axios';
 
 export default defineComponent({
   setup() {
     const state = reactive({
       todos: [],
+      createTodoValue: '',
     });
 
     fetchTodos()
 
     return {
       state,
-      enterKeyPressed,
+      createTodo,
+      updateTodo,
     }
 
     async function fetchTodos() {
@@ -57,7 +59,23 @@ export default defineComponent({
       return res
     }
 
-    async function enterKeyPressed($event, todo) {
+    async function createTodo($event) {
+      // 日本語変換時のエンターキー入力の場合は処理を終了
+      if ($event.keyCode !== 13) return;
+      const title = $event.target.value;
+      await axios({
+        method: 'POST',
+        url: 'http://localhost:3000/api/todo/',
+        data: {
+          title,
+        }
+      }).then((res) => {
+        state.createTodoValue = '',
+        fetchTodos();
+      })
+    }
+
+    async function updateTodo($event, todo) {
       // 日本語変換時のエンターキー入力の場合は処理を終了
       if ($event.keyCode !== 13) return;
       const { id } = todo;
