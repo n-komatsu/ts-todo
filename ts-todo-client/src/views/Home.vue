@@ -30,14 +30,38 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent, ref } from '@vue/composition-api';
+import { reactive, defineComponent } from '@vue/composition-api';
 import axios from 'axios';
+
+interface Todo {
+  id: number,
+  title: string,
+  createdAt: string,
+  updatedAt: string,
+  deletedAt: string | null
+  progress: object
+}
+
+interface Progress {
+  id: number,
+  completed: boolean,
+  createdAt: string,
+  updatedAt: string,
+  deletedAt: string | null
+}
+
+interface State {
+  todos: Todo[],
+  createTodoValue: string,
+  isLoading: boolean,
+}
 
 export default defineComponent({
   setup() {
-    const state = reactive({
+    const state: State = reactive({
       todos: [],
       createTodoValue: '',
+      isLoading: false,
     });
 
     fetchTodos()
@@ -59,7 +83,7 @@ export default defineComponent({
       return res
     }
 
-    async function createTodo($event) {
+    async function createTodo($event: KeyboardEvent & { target: HTMLInputElement }) {
       // 日本語変換時のエンターキー入力の場合は処理を終了
       if ($event.keyCode !== 13) return;
       const title = $event.target.value;
@@ -75,7 +99,7 @@ export default defineComponent({
       })
     }
 
-    async function updateTodo($event, todo) {
+    async function updateTodo($event: KeyboardEvent & { target: HTMLInputElement }, todo: Todo) {
       // 日本語変換時のエンターキー入力の場合は処理を終了
       if ($event.keyCode !== 13) return;
       const { id } = todo;
