@@ -15,7 +15,7 @@
           <div class="text-field">
             <label>
               <input type="checkbox" class="text-field-checkbox" :checked="todo.progress.completed">
-              <i class="text-field-icon is-left checkbox"></i>
+              <i class="text-field-icon is-left checkbox" @click="toggleCompleted($event, todo.id)"></i>
             </label>
             <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title" @keydown.enter="updateTodo($event, todo)">
             <i class="text-field-icon is-right remove"></i>
@@ -70,6 +70,7 @@ export default defineComponent({
       state,
       createTodo,
       updateTodo,
+      toggleCompleted,
     }
 
     async function fetchTodos() {
@@ -83,7 +84,7 @@ export default defineComponent({
       return res
     }
 
-    async function createTodo($event: KeyboardEvent & { target: HTMLInputElement }) {
+    async function createTodo($event: KeyboardEvent & { target: HTMLInputElement }): Promise<void> {
       // 日本語変換時のエンターキー入力の場合は処理を終了
       if ($event.keyCode !== 13) return;
       const title = $event.target.value;
@@ -99,7 +100,7 @@ export default defineComponent({
       })
     }
 
-    async function updateTodo($event: KeyboardEvent & { target: HTMLInputElement }, todo: Todo) {
+    async function updateTodo($event: KeyboardEvent & { target: HTMLInputElement }, todo: Todo): Promise<void> {
       // 日本語変換時のエンターキー入力の場合は処理を終了
       if ($event.keyCode !== 13) return;
       const { id } = todo;
@@ -113,6 +114,19 @@ export default defineComponent({
       }).then(() => {
         fetchTodos();
       });
+    }
+
+    async function toggleCompleted($event: Event, id: string): Promise<void> {
+      if(state.isLoading) return;
+      state.isLoading = true;
+      await axios({
+        method: 'POST',
+        url: `http://localhost:3000/api/progress/${id}`,
+      }).then((res) => {
+        console.log(res);
+        state.isLoading = false;
+        fetchTodos();
+      })
     }
   }
 })
