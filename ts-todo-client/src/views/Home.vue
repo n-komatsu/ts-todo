@@ -15,10 +15,10 @@
           <div class="text-field">
             <label>
               <input type="checkbox" class="text-field-checkbox" :checked="todo.progress.completed">
-              <i class="text-field-icon is-left checkbox" @click="toggleCompleted($event, todo.id)"></i>
+              <i class="text-field-icon is-left checkbox" @click="toggleCompleted(todo.id)"></i>
             </label>
             <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title" @keydown.enter="updateTodo($event, todo)">
-            <i class="text-field-icon is-right remove"></i>
+            <i class="text-field-icon is-right remove" @click="removeTodo(todo.id)"></i>
           </div>
         </li>
         <li>
@@ -71,6 +71,7 @@ export default defineComponent({
       createTodo,
       updateTodo,
       toggleCompleted,
+      removeTodo,
     }
 
     async function fetchTodos() {
@@ -116,14 +117,25 @@ export default defineComponent({
       });
     }
 
-    async function toggleCompleted($event: Event, id: string): Promise<void> {
+    async function toggleCompleted(id: string): Promise<void> {
       if(state.isLoading) return;
       state.isLoading = true;
       await axios({
         method: 'POST',
         url: `http://localhost:3000/api/progress/${id}`,
       }).then((res) => {
-        console.log(res);
+        state.isLoading = false;
+        fetchTodos();
+      })
+    }
+
+    async function removeTodo(id: string): Promise<void> {
+      if(state.isLoading) return;
+      state.isLoading = true;
+      await axios({
+        method: 'DELETE',
+        url: `http://localhost:3000/api/todo/${id}`,
+      }).then((res) => {
         state.isLoading = false;
         fetchTodos();
       })
