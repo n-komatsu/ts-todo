@@ -12,7 +12,7 @@
       </div>
       <ul class="home-todo-list">
         <li v-for="(todo, index) in state.todos" :key="index">
-          <div class="text-field">
+          <div class="text-field" :class="isCompleted(todo.progress.completed)">
             <label>
               <input type="checkbox" class="text-field-checkbox" :checked="todo.progress.completed">
               <i class="text-field-icon is-left checkbox" @click="toggleCompleted(todo.id)"></i>
@@ -22,7 +22,7 @@
           </div>
         </li>
         <li>
-          <p class="home-todo-list-result">未完了:1 完了:1</p>
+          <p class="home-todo-list-result">未完了:{{ incompletedTodos }} 完了:{{ completedTodos }}</p>
         </li>
       </ul>
     </div>
@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent } from '@vue/composition-api';
+import { reactive, defineComponent, computed } from '@vue/composition-api';
 import axios from 'axios';
 
 interface Todo {
@@ -39,7 +39,7 @@ interface Todo {
   createdAt: string,
   updatedAt: string,
   deletedAt: string | null
-  progress: object
+  progress: Progress
 }
 
 interface Progress {
@@ -64,6 +64,10 @@ export default defineComponent({
       isLoading: false,
     });
 
+    const completedTodos = computed(() => state.todos.filter((todo: Todo) => todo.progress.completed).length);
+    const incompletedTodos = computed(() => state.todos.filter((todo: Todo) => !todo.progress.completed).length);
+    const isCompleted = computed(() => (completed: boolean) => ({ 'is-completed': completed }));
+
     fetchTodos()
 
     return {
@@ -72,6 +76,9 @@ export default defineComponent({
       updateTodo,
       toggleCompleted,
       removeTodo,
+      completedTodos,
+      incompletedTodos,
+      isCompleted,
     }
 
     async function fetchTodos() {
@@ -190,6 +197,25 @@ export default defineComponent({
     position: relative;
     padding: 16px 56px 16px 56px;
     background-color: #fff;
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: calc(100% - 112px);
+      height: 2px;
+      background-color: #757575;
+      top: calc(50% - 1px);
+      left: 56px;
+      opacity: .5;
+      transform: scale(0, 1);
+      transform-origin: left;
+      transition: transform .3s;
+    }
+    &.is-completed {
+      &:before {
+        transform: scale(1, 1);
+      }
+    }
     &-input {
       width: 100%;
       font-size: 18px;
