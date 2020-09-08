@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { reactive, defineComponent, computed } from '@vue/composition-api';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 interface Todo {
   id: number,
@@ -54,6 +54,12 @@ interface State {
   todos: Todo[],
   createTodoValue: string,
   isLoading: boolean,
+}
+
+interface ResponseFetchTodos {
+  responce: {
+    todos: Todo[],
+  }
 }
 
 export default defineComponent({
@@ -81,8 +87,9 @@ export default defineComponent({
       isCompleted,
     }
 
-    async function fetchTodos() {
-      const res = await axios({
+    async function fetchTodos(): Promise<void | AxiosResponse<ResponseFetchTodos>>  {
+      // .catch節は今回ないけど、voidを返すのでres変数の型指定は、voidまたはAxiosResponseと指定しないと型エラーが出る
+      const res: void | AxiosResponse<ResponseFetchTodos>  = await axios({
         method: 'GET',
         url: 'http://localhost:3000/api/todo'
       }).then((res) => {
