@@ -15,10 +15,10 @@
           <div class="text-field" :class="isCompleted(todo.progress.completed)">
             <label>
               <input type="checkbox" class="text-field-checkbox" :checked="todo.progress.completed">
-              <i class="text-field-icon is-left checkbox" @click="toggleCompleted(todo.id)"></i>
+              <i class="text-field-icon is-left checkbox" @click="toggleCompleted"></i>
             </label>
-            <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title" @keydown.enter="updateTodo($event, todo)">
-            <i class="text-field-icon is-right remove" @click="removeTodo(todo.id)"></i>
+            <input type="text" class="text-field-input" placeholder="What do needs to be done?" :value="todo.title" @keydown.enter="updateTodo">
+            <i class="text-field-icon is-right remove" @click="removeTodo"></i>
           </div>
         </li>
         <li>
@@ -74,8 +74,6 @@ export default defineComponent({
     const incompletedTodos = computed(() => state.todos.filter((todo: Todo) => !todo.progress.completed).length);
     const isCompleted = computed(() => (completed: boolean) => ({ 'is-completed': completed }));
 
-    fetchTodos()
-
     return {
       state,
       createTodo,
@@ -87,72 +85,19 @@ export default defineComponent({
       isCompleted,
     }
 
-    async function fetchTodos(): Promise<void | AxiosResponse<ResponseFetchTodos>>  {
-      // .catch節は今回ないけど、voidを返すのでres変数の型指定は、voidまたはAxiosResponseと指定しないと型エラーが出る
-      const res: void | AxiosResponse<ResponseFetchTodos>  = await axios({
-        method: 'GET',
-        url: 'http://localhost:3000/api/todo'
-      }).then((res) => {
-        state.todos = [...res.data.responce.todos];
-      });
-
-      return res
+    async function fetchTodos()  {
     }
 
-    async function createTodo($event: KeyboardEvent & { target: HTMLInputElement }): Promise<void> {
-      // 日本語変換時のエンターキー入力の場合は処理を終了
-      if ($event.keyCode !== 13) return;
-      const title = $event.target.value;
-      await axios({
-        method: 'POST',
-        url: 'http://localhost:3000/api/todo/',
-        data: {
-          title,
-        }
-      }).then((res) => {
-        state.createTodoValue = '',
-        fetchTodos();
-      })
+    async function createTodo(): Promise<void> {
     }
 
-    async function updateTodo($event: KeyboardEvent & { target: HTMLInputElement }, todo: Todo): Promise<void> {
-      // 日本語変換時のエンターキー入力の場合は処理を終了
-      if ($event.keyCode !== 13) return;
-      const { id } = todo;
-      const updateTitle = $event.target.value;
-      await axios({
-        method: 'PUT',
-        url: `http://localhost:3000/api/todo/${id}`,
-        data: {
-          title: updateTitle,
-        }
-      }).then(() => {
-        fetchTodos();
-      });
+    async function updateTodo(): Promise<void> {
     }
 
-    async function toggleCompleted(id: string): Promise<void> {
-      if(state.isLoading) return;
-      state.isLoading = true;
-      await axios({
-        method: 'POST',
-        url: `http://localhost:3000/api/progress/${id}`,
-      }).then((res) => {
-        state.isLoading = false;
-        fetchTodos();
-      })
+    async function toggleCompleted(): Promise<void> {
     }
 
-    async function removeTodo(id: string): Promise<void> {
-      if(state.isLoading) return;
-      state.isLoading = true;
-      await axios({
-        method: 'DELETE',
-        url: `http://localhost:3000/api/todo/${id}`,
-      }).then((res) => {
-        state.isLoading = false;
-        fetchTodos();
-      })
+    async function removeTodo(): Promise<void> {
     }
   }
 })
